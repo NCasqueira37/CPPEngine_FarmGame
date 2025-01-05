@@ -1,5 +1,8 @@
 #pragma once
 #include "SDL.h"
+#include <iostream>
+#include "Level.h"
+
 class Game
 {
 	void update(double deltaTime);
@@ -7,7 +10,7 @@ class Game
 	void draw(SDL_Renderer* renderer, int width, int height);
 public:
 	bool running = false;
-	Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height);
+	Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, double targetFrameRate);
 	~Game();
 };
 

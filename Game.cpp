@@ -1,36 +1,49 @@
 #include "Game.h"
-#include <iostream>
-#include "Level.h"
 
 Level level;
-Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height) {
+Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, double targetFrameRate) {
 	if (window != nullptr || renderer != nullptr) {
 		// Create tiles
 		level.createTiles(width, height, 50);
 
+		auto previousFrame = SDL_GetTicks64();
+		auto currentFrame = SDL_GetTicks64();
+		double deltaTime = 0;
+
 		// Main loop
 		running = true;
 		while (running) {
-			processEvents(running);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-			SDL_RenderClear(renderer);
-			draw(renderer, width, height);
-			SDL_RenderPresent(renderer);
+			currentFrame = SDL_GetTicks64();
+			deltaTime = (currentFrame - previousFrame) / 1000.0f;
+			if (deltaTime > 1.0 / targetFrameRate) {
+				update(deltaTime);
+				previousFrame = currentFrame;
+				processEvents(running);
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+				SDL_RenderClear(renderer);
+				draw(renderer, width, height);
+				SDL_RenderPresent(renderer);
+			}
+
+			
 		}
 	}
 	else {
-		// If window or pointer is a null pointer
+		// If window or renderer is a null pointer
 		std::cout << SDL_GetError() << std::endl;
 	}
 }
+
 
 Game::~Game() {
 	running = false;
 }
 
+
 void Game::update(double deltaTime) {
-	
+
 }
+
 
 void Game::processEvents(const bool running) {
 	if (running) {

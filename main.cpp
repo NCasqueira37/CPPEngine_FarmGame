@@ -9,6 +9,7 @@ int main(int argc, char* argv[])
 	std::string windowTitle = "SDL Window";
 	int windowWidth = 800;
 	int windowHeight = 600;
+	double targetFrameRate = 60;
 
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
@@ -44,7 +45,7 @@ int main(int argc, char* argv[])
 				std::cout << "Renderer = " << rendererInfo.name << std::endl;
 
 				// Start Game
-				Game game(window, renderer, windowWidth, windowHeight);
+				Game game(window, renderer, windowWidth, windowHeight, targetFrameRate);
 
 				// Destroy Renderer 
 				SDL_DestroyRenderer(renderer);
