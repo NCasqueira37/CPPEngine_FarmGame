@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "TextureLoader.h"
 
 Level level;
 Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, double targetFrameRate) {
@@ -24,10 +25,8 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, do
 				update(deltaTime);
 				previousFrame = currentFrame;
 				processEvents(running);
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-				SDL_RenderClear(renderer);
+				
 				draw(renderer, width, height);
-				SDL_RenderPresent(renderer);
 			}
 
 			
@@ -46,7 +45,7 @@ Game::~Game() {
 
 
 void Game::update(double deltaTime) {
-
+	 Tile::updateTileWet(level);
 }
 
 
@@ -83,7 +82,6 @@ void Game::processEvents(const bool running) {
 		int x, y;
 		Uint32 mouseState = SDL_GetMouseState(&x, &y);
 		if (mouseState == 1) {
-			std::cout << "x: " << x << ", y: " << y << std::endl;
 			for (Tile& t : level.tiles) {
 
 				int xTileSize = t.x * t.tileSize;
@@ -91,9 +89,37 @@ void Game::processEvents(const bool running) {
 
 				if (x > xTileSize && x < xTileSize + t.tileSize &&
 					y > yTileSize && y < yTileSize + t.tileSize) {
-					if (t.getTileId() != level.selectedTile) {
-						t.setTileId(level.selectedTile);
+					
+					// Cannot place duplicate tile
+					if (t.getTileType() != level.selectedTile) {
+						// placing any tile on a wet tile
+						if (t.getTileType() == TileType::wet) {
+							t.setTileType(level.selectedTile);
+							Tile::setTileWet(t, level);
+						}
+						// delete wet tiles after removing water tile
+						else if (t.getTileType() == TileType::water) {
+							t.setTileType(level.selectedTile);
+							int distance = 1;
+							for (int x1 = t.x - distance; x1 <= t.x + distance; x1++) {
+								for (int y1 = t.y - distance; y1 <= t.y + distance; y1++) {
+									for (Tile& t1 : level.tiles) {
+										if (t1.getTileType() == TileType::wet) {
+											if (t1.x == x1 && t1.y == y1) {
+												t1.setTileType(TileType::grass);
+											}
+										}
+									}
+								}
+							}
+						}
+						// can't place tile on a wet tile
+						else if (t.getTileType() != TileType::wet) {
+							t.setTileType(level.selectedTile);
+							Tile::setTileWet(t, level);
+						}
 					}
+					
 				}
 			}
 		}
@@ -102,5 +128,8 @@ void Game::processEvents(const bool running) {
 
 
 void Game::draw(SDL_Renderer* renderer, int width, int height) {
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
 	level.drawTiles(renderer, width, height, 50);
+	SDL_RenderPresent(renderer);
 }

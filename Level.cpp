@@ -20,7 +20,7 @@ void Level::createTiles(int width, int height, int tileSize) {
 void Level::drawTiles(SDL_Renderer* renderer, int width, int height, int tileSize) {
 	for (Tile& t : tiles) {
 		bool dark = ((t.x + t.y) % 2 == 0);
-		switch (t.getTileId())
+		switch (t.getTileType())
 		{
 		case TileType::background:
 			if (dark) {
@@ -36,6 +36,9 @@ void Level::drawTiles(SDL_Renderer* renderer, int width, int height, int tileSiz
 		case TileType::grass:
 			SDL_SetRenderDrawColor(renderer, 0, 100, 0, 255);
 			break;
+		case TileType::wet:
+			SDL_SetRenderDrawColor(renderer, 0, 70, 0, 255);
+			break;
 		default:
 			break;
 		}
@@ -44,8 +47,3 @@ void Level::drawTiles(SDL_Renderer* renderer, int width, int height, int tileSiz
 		SDL_RenderFillRect(renderer, &rect);
 	}
 }
-
-// SDL_SetRenderDrawColor(renderer, 170, 174, 127, 255);
-// SDL_SetRenderDrawColor(renderer, 208, 214, 179, 255);
-// SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-// SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
