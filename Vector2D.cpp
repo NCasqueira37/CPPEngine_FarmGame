@@ -4,7 +4,6 @@ double Vector2D::getMagnitude() {
 	return (sqrt(x * x + y * y));
 }
 Vector2D Vector2D::normalize() {
-	// vector / magnitude of vector
 	double magnitude = getMagnitude();
 	return Vector2D(x / magnitude, y / magnitude);
 }

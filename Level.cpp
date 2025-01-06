@@ -4,7 +4,7 @@ void Level::createTiles(int width, int height, int tileSize) {
 	int amountOfTiles = (width + height) / tileSize;
 	int index = 0;
 	while (index < amountOfTiles) {
-		for (size_t x = 0; x < width/tileSize; x++)
+		for (size_t x = 0; x < width / tileSize; x++)
 		{
 			for (size_t y = 0; y < height / tileSize; y++)
 			{
@@ -15,6 +15,8 @@ void Level::createTiles(int width, int height, int tileSize) {
 		}
 	}
 }
+
+
 void Level::drawTiles(SDL_Renderer* renderer, int width, int height, int tileSize) {
 	for (Tile& t : tiles) {
 		bool dark = ((t.x + t.y) % 2 == 0);

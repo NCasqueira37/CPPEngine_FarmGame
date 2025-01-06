@@ -6,6 +6,7 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, do
 		// Create tiles
 		level.createTiles(width, height, 50);
 
+		// delta time variables
 		auto previousFrame = SDL_GetTicks64();
 		auto currentFrame = SDL_GetTicks64();
 		double deltaTime = 0;
@@ -13,8 +14,12 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, do
 		// Main loop
 		running = true;
 		while (running) {
+
+			// Calculate deltatime
 			currentFrame = SDL_GetTicks64();
 			deltaTime = (currentFrame - previousFrame) / 1000.0f;
+
+			// running everything based on target frame rate
 			if (deltaTime > 1.0 / targetFrameRate) {
 				update(deltaTime);
 				previousFrame = currentFrame;
@@ -49,10 +54,13 @@ void Game::processEvents(const bool running) {
 	if (running) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event) > 0) {
+
+			// Quit window button
 			if (event.type == SDL_QUIT) {
 				this->running = false;
 			}
 
+			// Keyboard events
 			if (event.type == SDL_KEYDOWN) {
 				switch (event.key.keysym.scancode)
 				{
@@ -75,6 +83,7 @@ void Game::processEvents(const bool running) {
 		int x, y;
 		Uint32 mouseState = SDL_GetMouseState(&x, &y);
 		if (mouseState == 1) {
+			std::cout << "x: " << x << ", y: " << y << std::endl;
 			for (Tile& t : level.tiles) {
 
 				int xTileSize = t.x * t.tileSize;
@@ -84,15 +93,13 @@ void Game::processEvents(const bool running) {
 					y > yTileSize && y < yTileSize + t.tileSize) {
 					if (t.getTileId() != level.selectedTile) {
 						t.setTileId(level.selectedTile);
-						std::cout << "Tile changed to: " << t.getTileId() << std::endl;
 					}
-
 				}
-
 			}
 		}
 	}
 }
+
 
 void Game::draw(SDL_Renderer* renderer, int width, int height) {
 	level.drawTiles(renderer, width, height, 50);
