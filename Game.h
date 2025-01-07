@@ -2,6 +2,8 @@
 #include "SDL.h"
 #include <iostream>
 #include "Level.h"
+#include "Plant.h"
+#include "TextureManager.h"
 
 class Game
 {

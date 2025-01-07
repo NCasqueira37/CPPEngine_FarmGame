@@ -21,8 +21,9 @@
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="Plant.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
@@ -30,7 +31,8 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="Plant.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
@@ -87,20 +89,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\lib\x64;E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\lib\x64;E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\lib\x64;E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\include;E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\SDL2_image-devel-2.8.4-VC\SDL2_image-2.8.4\lib\x64;E:\SDL2-devel-2.30.11-VC\SDL2-2.30.11\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,12 +111,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,6 +129,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +137,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -143,12 +147,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,6 +165,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,7 +173,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

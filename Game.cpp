@@ -1,11 +1,14 @@
 #include "Game.h"
-#include "TextureLoader.h"
 
 Level level;
+TextureManager textureManager;
 Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, double targetFrameRate) {
 	if (window != nullptr || renderer != nullptr) {
 		// Create tiles
 		level.createTiles(width, height, 50);
+
+		// load Textures
+		textureManager.loadTexture(renderer, "0", "Data/Sprites/flower.png");
 
 		// delta time variables
 		auto previousFrame = SDL_GetTicks64();
@@ -76,6 +79,27 @@ void Game::processEvents(const bool running) {
 					break;
 				}
 			}
+			// Mouse click
+			if (event.type == SDL_MOUSEBUTTONDOWN) {
+				if (event.button.button == SDL_BUTTON_RIGHT) {
+					std::cout << "Button click\n";
+					int x;
+					int y;
+					SDL_GetMouseState(&x, &y);
+					for (Tile& t : level.tiles) {
+
+						int xTileSize = t.x * t.tileSize;
+						int yTileSize = t.y * t.tileSize;
+
+						if (x > xTileSize && x < xTileSize + t.tileSize &&
+							y > yTileSize && y < yTileSize + t.tileSize) {
+							if (t.getTileType() == TileType::wet) {
+								Plant p(xTileSize, yTileSize, "0", 50);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		// setting tile Id
@@ -131,5 +155,8 @@ void Game::draw(SDL_Renderer* renderer, int width, int height) {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 	level.drawTiles(renderer, width, height, 50);
+	for (auto& p : Plant::plants) {
+		p.drawPlant(renderer, textureManager);
+	}
 	SDL_RenderPresent(renderer);
 }
