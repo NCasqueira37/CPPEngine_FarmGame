@@ -1,6 +1,8 @@
 #include "Plant.h"
 
 std::vector<Plant> Plant::plants;
+
+
 Plant::Plant() {
 	rect.x = 0;
 	rect.y = 0;
@@ -8,6 +10,7 @@ Plant::Plant() {
 	rect.h = 0;
 	Plant::plants.push_back(*this);
 }
+
 
 Plant::Plant(int x, int y, std::string id, int tileSize){
 	this->id = id;
@@ -17,6 +20,7 @@ Plant::Plant(int x, int y, std::string id, int tileSize){
 	rect.h = tileSize;
 	Plant::plants.push_back(*this);
 }
+
 
 void Plant::drawPlant(SDL_Renderer* renderer, TextureManager& textureManager) {
 	if (textureManager.getTexture(id) != nullptr) {

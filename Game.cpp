@@ -83,6 +83,7 @@ void Game::processEvents(const bool running) {
 		}
 		handleTilePlacement();
 		handlePlantPlacement();
+
 	}
 }
 
@@ -140,7 +141,6 @@ void Game::handleTilePlacement() {
 						Tile::setTileWet(t, level);
 					}
 				}
-
 			}
 		}
 	}
@@ -151,8 +151,7 @@ void Game::handleTilePlacement() {
 void Game::handlePlantPlacement() {
 	int x, y;
 	Uint32 mouseState = SDL_GetMouseState(&x, &y);
-	if (mouseState == 4) {
-		std::cout << "right\n";
+	if (mouseState == SDL_BUTTON_X1) {
 		for (Tile& t : level.tiles) {
 
 			int xTileSize = t.x * t.tileSize;
@@ -160,8 +159,9 @@ void Game::handlePlantPlacement() {
 
 			if (x > xTileSize && x < xTileSize + t.tileSize &&
 				y > yTileSize && y < yTileSize + t.tileSize) {
-				if (t.getTileType() == TileType::wet) {
+				if (t.getTileType() == TileType::wet && t.hasPlant == false) {
 					Plant p(xTileSize, yTileSize, "0", 50);
+					t.hasPlant = true;
 					std::cout << "Added plant\n";
 				}
 			}

@@ -36,5 +36,27 @@ void Tile::updateTileWet(Level& level) {
 				}
 			}
 		}
+		else if (tile.getTileType() != TileType::wet && tile.hasPlant == true) {
+			
+			tile.hasPlant = false;
+		}
 	}
+}
+
+
+Tile Tile::getTileFromMouse(std::vector<Tile> tiles) {
+	int x, y;
+	Uint32 mouseState = SDL_GetMouseState(&x, &y);
+	for (Tile& t : tiles) {
+
+		int xTileSize = t.x * t.tileSize;
+		int yTileSize = t.y * t.tileSize;
+
+		if (x > xTileSize && x < xTileSize + t.tileSize &&
+			y > yTileSize && y < yTileSize + t.tileSize) {
+			std::cout << "x: " << t.x << ", y: " << t.y << std::endl;
+			return t;
+		}
+	}
+	return Tile();
 }

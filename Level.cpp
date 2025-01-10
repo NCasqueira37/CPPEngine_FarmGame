@@ -45,5 +45,6 @@ void Level::drawTiles(SDL_Renderer* renderer, int width, int height, int tileSiz
 		
 		SDL_Rect rect = { t.x * tileSize, t.y * tileSize, tileSize, tileSize };
 		SDL_RenderFillRect(renderer, &rect);
+		//SDL_RenderDrawRect(renderer, &rect);
 	}
 }
