@@ -22,11 +22,15 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Plant.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Plant.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -1,6 +1,7 @@
 #include "Game.h"
 
 GameManager gameManager;
+TextureManager textureManager;
 Game::Game() {
 	init();
 }
@@ -23,8 +24,12 @@ void Game::init() {
 			SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-			// testing
+			// Create tiles
 			Tile::createTiles(width, height, 50, gameManager.tiles);
+
+			// Testing
+			
+			textureManager.loadTexture("flower1", "Data/flower.png", renderer);
 
 			// Main Loop
 			running = true;
@@ -36,6 +41,9 @@ void Game::init() {
 				for (Tile& t : gameManager.tiles) {
 					t.draw(renderer, 50);
 					
+				}
+				for (Plant& p : gameManager.plants) {
+					p.draw(renderer);
 				}
 
 				SDL_RenderPresent(renderer);
@@ -64,9 +72,18 @@ void Game::handleEvents(SDL_Event& e) {
 void Game::handleInput(SDL_Event& e) {
 	int x, y;
 	Uint32 mouseState = SDL_GetMouseState(&x, &y);
+
+	// Place tiles with LMB
 	if (mouseState == SDL_BUTTON_LEFT) {
-		Tile::placeTile(x, y, 50, gameManager.selectedTileType, gameManager.tiles);
+		Tile::placeTile(x, y, 50, gameManager.selectedTileType, gameManager.tiles, gameManager.plants);
 	}
+
+	// Place plants with RMB
+	if (mouseState == SDL_BUTTON_X1) {
+		Plant p(x, y, 50, textureManager.textures["flower1"], gameManager.plants, gameManager.tiles);
+	}
+
+	// Keys to change selected tiles and plants
 	if (e.type == SDL_KEYDOWN) {
 		switch (e.key.keysym.scancode)
 		{

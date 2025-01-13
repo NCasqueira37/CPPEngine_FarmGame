@@ -1,6 +1,7 @@
 #include "Tile.h"
-
 #include <iostream>
+#include "Plant.h"
+
 
 Tile::Tile(int x, int y, std::vector<Tile>& tiles) {
 	this->x = x;
@@ -58,7 +59,7 @@ void Tile::draw(SDL_Renderer* renderer, int tileSize) const {
 }
 
 
-void Tile::placeTile(int x, int y, int tileSize, TileType tileType, std::vector<Tile>& tiles) {
+void Tile::placeTile(int x, int y, int tileSize, TileType tileType, std::vector<Tile>& tiles, std::vector<Plant>& plants) {
 	int tempX = x / tileSize;
 	int tempY = y / tileSize;
 
@@ -68,6 +69,8 @@ void Tile::placeTile(int x, int y, int tileSize, TileType tileType, std::vector<
 			std::cout << "Tile Changed\n";
 
 			checkForNearbyWater(tempX, tempY, tiles);
+			checkWetTiles(tiles);
+			Plant::checkPlantOverTile(tiles, plants);
 		}
 	}
 }
@@ -95,6 +98,56 @@ void Tile::checkForNearbyWater(int x, int y, std::vector<Tile>& tiles) {
 				}
 			}
 			grassTile.isWet = foundWater;
+		}
+	}
+}
+
+
+bool Tile::checkTileIsWet(int x, int y, int tileSize, std::vector<Tile>& tiles) {
+	bool result = false;
+	for (Tile& t : tiles) {
+		if (t.x == x && t.y == y && result == false) {
+			if (t.isWet == true) {
+				result = true;
+			}
+		}
+	}
+	return result;
+}
+
+
+bool Tile::checkTileHasPlant(int x, int y, int tileSize, std::vector<Tile>& tiles) {
+	bool result = false;
+	for (Tile& t : tiles) {
+		if (t.x == x && t.y == y && result == false) {
+			if (t.hasPlant == true) {
+				result = true;
+			}
+		}
+	}
+	return result;
+}
+
+
+Tile& Tile::getTileOverMouse(int x, int y, int tileSize, std::vector<Tile>& tiles) {
+	int mouseX = 0;
+	int mouseY = 0;
+	SDL_GetMouseState(&mouseX, &mouseY);
+
+	mouseX /= tileSize;
+	mouseY /= tileSize;
+	for (Tile& t : tiles) {
+		if (mouseX == t.x && mouseY == t.y) {
+			return t;
+		}
+	}
+}
+
+
+void Tile::checkWetTiles(std::vector<Tile>& tiles) {
+	for (Tile& t : tiles) {
+		if (t.tileType != TileType::grass && t.isWet == true) {
+			t.isWet = false;
 		}
 	}
 }

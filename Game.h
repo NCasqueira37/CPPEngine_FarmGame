@@ -2,6 +2,7 @@
 #include <iostream>
 #include "SDL.h"
 #include "GameManager.h"
+#include "TextureManager.h"
 
 #define title "SDL Window"
 #define xPos SDL_WINDOWPOS_CENTERED
