@@ -1,20 +1,24 @@
 #pragma once
-#include "SDL.h"
 #include <iostream>
-#include "Level.h"
-#include "Plant.h"
-#include "TextureManager.h"
+#include "SDL.h"
+#include "GameManager.h"
+
+#define title "SDL Window"
+#define xPos SDL_WINDOWPOS_CENTERED
+#define yPos SDL_WINDOWPOS_CENTERED
+#define width 800
+#define height 600
 
 class Game
 {
-	void update(double deltaTime);
-	void processEvents(const bool running);
-	void draw(SDL_Renderer* renderer, int width, int height);
-	void handleTilePlacement();
-	void handlePlantPlacement();
-public:
+	SDL_Window* window = nullptr;
+	SDL_Renderer* renderer = nullptr;
 	bool running = false;
-	Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, double targetFrameRate);
-	~Game();
+
+public:
+	Game();
+	void init();
+	void handleEvents(SDL_Event& e);
+	void handleInput(SDL_Event& e);
 };
 

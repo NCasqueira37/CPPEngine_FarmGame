@@ -1,34 +1,27 @@
 #pragma once
-#include <iostream>
+#include "SDL.h"
 #include <vector>
 
-class Level;
-
-enum TileType {
-	background,
-	water,
-	grass,
-	wet
-};
 
 class Tile
 {
-	TileType tileType = TileType::background;
-
+	
 public:
+	enum TileType {
+		background,
+		grass,
+		water,
+	};
+
 	int x, y;
-	int tileSize = 0;
-	bool hasPlant = false;
+	TileType tileType = background;
+	bool isWet = false;
 
-	Tile() :x(-50), y(-50) {};
-	Tile(int x, int y, int tileSize) : x(x), y(y), tileSize(tileSize) {};
+	Tile(int x, int y, std::vector<Tile>& tiles);
 
-	void setTileType(const TileType tileType) { this->tileType = tileType; };
-	static void setTileType(Tile& tile, const TileType tileType) { tile.tileType = tileType; };
-	static void setTileWet(Tile& tile, Level& level);
-	static void updateTileWet(Level& level);
-	static Tile getTileFromMouse(std::vector<Tile> tiles);
-
-	const TileType getTileType() const { return tileType; };
+	static void createTiles(int w, int h, int tileSize, std::vector<Tile>& tiles);
+	void draw(SDL_Renderer* renderer, int tileSize) const;
+	static void placeTile(int x, int y, int tileSize, TileType tileType, std::vector<Tile>& tiles);
+	static void checkForNearbyWater(int x, int y, std::vector<Tile>& tiles);
 };
 

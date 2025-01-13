@@ -19,22 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Level.h" />
-    <ClInclude Include="Plant.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="Tile.h" />
-    <ClInclude Include="Vector2D.h" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Level.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Plant.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="Vector2D.cpp" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

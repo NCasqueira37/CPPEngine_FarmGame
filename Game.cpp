@@ -1,170 +1,92 @@
 #include "Game.h"
 
-Level level;
-TextureManager textureManager;
-Game::Game(SDL_Window* window, SDL_Renderer* renderer, int width, int height, double targetFrameRate) {
-	if (window != nullptr || renderer != nullptr) {
-		// Create tiles
-		level.createTiles(width, height, 50);
+GameManager gameManager;
+Game::Game() {
+	init();
+}
 
-		// load Textures
-		textureManager.loadTexture(renderer, "0", "Data/Sprites/flower.png");
 
-		// delta time variables
-		auto previousFrame = SDL_GetTicks64();
-		auto currentFrame = SDL_GetTicks64();
-		double deltaTime = 0;
+void Game::init() {
 
-		// Main loop
-		running = true;
-		while (running) {
+	SDL_Init(SDL_INIT_VIDEO);
 
-			// Calculate deltatime
-			currentFrame = SDL_GetTicks64();
-			deltaTime = (currentFrame - previousFrame) / 1000.0f;
-
-			// running everything based on target frame rate
-			if (deltaTime > 1.0 / targetFrameRate) {
-				update(deltaTime);
-				previousFrame = currentFrame;
-				processEvents(running);
-				
-				draw(renderer, width, height);
-			}
-
-			
-		}
-	}
-	else {
-		// If window or renderer is a null pointer
+	window = SDL_CreateWindow(title, xPos, yPos, width, height, 0);
+	if (window == nullptr) {
 		std::cout << SDL_GetError() << std::endl;
 	}
-}
-
-
-Game::~Game() {
-	running = false;
-}
-
-
-void Game::update(double deltaTime) {
-	 Tile::updateTileWet(level);
-}
-
-
-void Game::processEvents(const bool running) {
-	if (running) {
-
-		SDL_Event event;
-		while (SDL_PollEvent(&event) > 0) {
-
-			// Quit window button
-			if (event.type == SDL_QUIT) {
-				this->running = false;
-			}
-
-			// Keyboard events
-			if (event.type == SDL_KEYDOWN) {
-				switch (event.key.keysym.scancode)
-				{
-				case SDL_SCANCODE_1:
-					level.selectedTile = TileType::background;
-					break;
-				case SDL_SCANCODE_2:
-					level.selectedTile = TileType::water;
-					break;
-				case SDL_SCANCODE_3:
-					level.selectedTile = TileType::grass;
-					break;
-				default:
-					break;
-				}
-			}
+	else {
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		if (renderer == nullptr) {
+			std::cout << SDL_GetError() << std::endl;
 		}
-		handleTilePlacement();
-		handlePlantPlacement();
+		else {
+			SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+			SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
+			// testing
+			Tile::createTiles(width, height, 50, gameManager.tiles);
+
+			// Main Loop
+			running = true;
+			SDL_Event event{};
+			while (running) {
+				// DeltaTime
+				// update
+				SDL_RenderClear(renderer);
+				for (Tile& t : gameManager.tiles) {
+					t.draw(renderer, 50);
+					
+				}
+
+				SDL_RenderPresent(renderer);
+				// handle inputs
+				
+				// handle events
+				handleEvents(event);
+			}
+			SDL_DestroyRenderer(renderer);
+		}
+		SDL_DestroyWindow(window);
+	}
+	SDL_Quit();
+}
+
+
+void Game::handleEvents(SDL_Event& e) {
+	SDL_PollEvent(&e);
+	handleInput(e);
+	if (e.type == SDL_QUIT) {
+		running = false;
 	}
 }
 
 
-void Game::draw(SDL_Renderer* renderer, int width, int height) {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	level.drawTiles(renderer, width, height, 50);
-	for (auto& p : Plant::plants) {
-		p.drawPlant(renderer, textureManager);
-	}
-	SDL_RenderPresent(renderer);
-}
-
-
-// Function to place tiles
-void Game::handleTilePlacement() {
+void Game::handleInput(SDL_Event& e) {
 	int x, y;
 	Uint32 mouseState = SDL_GetMouseState(&x, &y);
 	if (mouseState == SDL_BUTTON_LEFT) {
-		for (Tile& t : level.tiles) {
-
-			int xTileSize = t.x * t.tileSize;
-			int yTileSize = t.y * t.tileSize;
-
-			if (x > xTileSize && x < xTileSize + t.tileSize &&
-				y > yTileSize && y < yTileSize + t.tileSize) {
-
-				// Cannot place duplicate tile
-				if (t.getTileType() != level.selectedTile) {
-					// placing any tile on a wet tile
-					if (t.getTileType() == TileType::wet) {
-						t.setTileType(level.selectedTile);
-						Tile::setTileWet(t, level);
-					}
-					// delete wet tiles after removing water tile
-					else if (t.getTileType() == TileType::water) {
-						t.setTileType(level.selectedTile);
-						int distance = 1;
-						for (int x1 = t.x - distance; x1 <= t.x + distance; x1++) {
-							for (int y1 = t.y - distance; y1 <= t.y + distance; y1++) {
-								for (Tile& t1 : level.tiles) {
-									if (t1.getTileType() == TileType::wet) {
-										if (t1.x == x1 && t1.y == y1) {
-											t1.setTileType(TileType::grass);
-										}
-									}
-								}
-							}
-						}
-					}
-					// can't place tile on a wet tile
-					else if (t.getTileType() != TileType::wet) {
-						t.setTileType(level.selectedTile);
-						Tile::setTileWet(t, level);
-					}
-				}
-			}
-		}
+		Tile::placeTile(x, y, 50, gameManager.selectedTileType, gameManager.tiles);
 	}
-}
+	if (e.type == SDL_KEYDOWN) {
+		switch (e.key.keysym.scancode)
+		{
+		case SDL_SCANCODE_1:
+			gameManager.selectedTileType = Tile::TileType::background;
+			std::cout << "Selected tile changed\n";
+			break;
 
+		case SDL_SCANCODE_2:
+			gameManager.selectedTileType = Tile::TileType::grass;
+			std::cout << "Selected tile changed\n";
+			break;
 
-// Function to place plants
-void Game::handlePlantPlacement() {
-	int x, y;
-	Uint32 mouseState = SDL_GetMouseState(&x, &y);
-	if (mouseState == SDL_BUTTON_X1) {
-		for (Tile& t : level.tiles) {
+		case SDL_SCANCODE_3:
+			gameManager.selectedTileType = Tile::TileType::water;
+			std::cout << "Selected tile changed\n";
+			break;
 
-			int xTileSize = t.x * t.tileSize;
-			int yTileSize = t.y * t.tileSize;
-
-			if (x > xTileSize && x < xTileSize + t.tileSize &&
-				y > yTileSize && y < yTileSize + t.tileSize) {
-				if (t.getTileType() == TileType::wet && t.hasPlant == false) {
-					Plant p(xTileSize, yTileSize, "0", 50);
-					t.hasPlant = true;
-					std::cout << "Added plant\n";
-				}
-			}
+		default:
+			break;
 		}
 	}
 }
