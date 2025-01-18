@@ -10,5 +10,8 @@ public:
 	std::vector<Tile> tiles;
 	std::vector<Plant> plants;
 	Tile::TileType selectedTileType = Tile::TileType::background;
+
+	// Gold from selling plants
+	int gold = 0;
 };
 

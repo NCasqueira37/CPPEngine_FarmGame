@@ -3,6 +3,7 @@
 #include "SDL.h"
 #include "GameManager.h"
 #include "TextureManager.h"
+#include "RanNum.h"
 
 #define title "SDL Window"
 #define xPos SDL_WINDOWPOS_CENTERED
@@ -21,5 +22,6 @@ public:
 	void init();
 	void handleEvents(SDL_Event& e);
 	void handleInput(SDL_Event& e);
+	void update(float deltaTime);
 };
 

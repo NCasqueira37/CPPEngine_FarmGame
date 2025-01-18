@@ -27,15 +27,31 @@ void Game::init() {
 			// Create tiles
 			Tile::createTiles(width, height, 50, gameManager.tiles);
 
-			// Testing
-			
-			textureManager.loadTexture("flower1", "Data/flower.png", renderer);
+			// Load Textures
+			textureManager.loadTexture("flower1", "Data/flower1.png", renderer);
+			textureManager.loadTexture("flower1Rare", "Data/flower1Rare.png", renderer);
+
+			// deltaTime variables
+			Uint64 previousFrame = SDL_GetPerformanceCounter();
+			Uint64 currentFrame = SDL_GetPerformanceCounter();
+
 
 			// Main Loop
 			running = true;
 			SDL_Event event{};
 			while (running) {
 				// DeltaTime
+				previousFrame = SDL_GetPerformanceCounter();
+				currentFrame = SDL_GetPerformanceCounter();
+				float deltaTime = (float)(currentFrame - previousFrame) / (float)SDL_GetPerformanceFrequency();
+				if (deltaTime > 1 / 60) {
+					previousFrame = currentFrame;
+
+					// Update function
+					update(deltaTime);
+				}
+				
+				
 				// update
 				SDL_RenderClear(renderer);
 				for (Tile& t : gameManager.tiles) {
@@ -47,8 +63,9 @@ void Game::init() {
 				}
 
 				SDL_RenderPresent(renderer);
+
 				// handle inputs
-				
+				handleInput(event);
 				// handle events
 				handleEvents(event);
 			}
@@ -62,7 +79,6 @@ void Game::init() {
 
 void Game::handleEvents(SDL_Event& e) {
 	SDL_PollEvent(&e);
-	handleInput(e);
 	if (e.type == SDL_QUIT) {
 		running = false;
 	}
@@ -80,7 +96,20 @@ void Game::handleInput(SDL_Event& e) {
 
 	// Place plants with RMB
 	if (mouseState == SDL_BUTTON_X1) {
-		Plant p(x, y, 50, textureManager.textures["flower1"], gameManager.plants, gameManager.tiles);
+		int ranNum = RanNum::ranInt(1, 10);
+		if (ranNum == 1) {
+			Plant p(x, y, 50, textureManager.textures["flower1Rare"], gameManager.plants, gameManager.tiles);
+		}
+		else {
+			Plant p(x, y, 50, textureManager.textures["flower1"], gameManager.plants, gameManager.tiles);
+		}
+	}
+	if (mouseState == SDL_BUTTON_MIDDLE) {
+		bool isHarvested = Plant::harvestPlant(x, y, gameManager.plants, gameManager.tiles);
+		if (isHarvested) {
+			gameManager.gold++;
+			std::cout << gameManager.gold << std::endl;
+		}
 	}
 
 	// Keys to change selected tiles and plants
@@ -105,5 +134,12 @@ void Game::handleInput(SDL_Event& e) {
 		default:
 			break;
 		}
+	}
+}
+
+
+void Game::update(float deltaTime) {
+	for (Plant& p : gameManager.plants){
+		p.update(deltaTime);
 	}
 }
